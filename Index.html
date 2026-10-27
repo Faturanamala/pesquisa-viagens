@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<base target="_top">
+<title>Pesquisa do Viajante</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+/* Conceito: sinalização de aeroporto. Painel de partidas no alto, a pesquisa como uma rota
+   de 7 trechos, e o fim como cartão de embarque. Amarelo de placa sobre grafite. */
+:root {
+  --bg: #eef1f3;
+  --surface: #ffffff;
+  --ink: #15191e;
+  --muted: #56606b;
+  --line: #d3d9df;
+  --accent: #ffcc00;
+  --accent-ink: #15191e;
+  --accent-soft: #fff5cc;
+  --board: #121518;
+  --board-cell: #1d2227;
+  --board-fg: #f4f4ef;
+  --board-dim: #8a949e;
+  --err: #b3261e;
+  --ok: #1e7a4c;
+  --shadow: 0 1px 2px rgba(21,25,30,.06), 0 8px 24px rgba(21,25,30,.06);
+  --f-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --f-body: "Barlow", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1114; --surface: #171b20; --ink: #eef1f4; --muted: #9ba5af; --line: #2b3138;
+    --accent: #ffcc00; --accent-ink: #15191e; --accent-soft: #332b08;
+    --board: #07090b; --board-cell: #14181c; --board-fg: #f4f4ef; --board-dim: #7b858f;
+    --err: #ff8a80; --ok: #6fd49c; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1114; --surface: #171b20; --ink: #eef1f4; --muted: #9ba5af; --line: #2b3138;
+  --accent: #ffcc00; --accent-ink: #15191e; --accent-soft: #332b08;
+  --board: #07090b; --board-cell: #14181c; --board-fg: #f4f4ef; --board-dim: #7b858f;
+  --err: #ff8a80; --ok: #6fd49c; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 17px/1.55 var(--f-body);
+  padding: env(safe-area-inset-top, 0px) 16px calc(env(safe-area-inset-bottom, 0px) + 32px);
+}
+.wrap { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; line-height: 1.05; }
+p { margin: 0; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.rotulo { font: 600 13px/1 var(--f-display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+/* Topo */
+.topo { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 18px 0; }
+.marca { display: flex; align-items: center; gap: 10px; font: 700 20px/1 var(--f-display); letter-spacing: .02em; text-transform: uppercase; }
+.placa { width: 34px; height: 34px; border-radius: 6px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; flex: none; }
+.placa svg { width: 20px; height: 20px; }
+.selo { font: 600 13px/1 var(--f-display); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+
+/* Painel de partidas */
+.painel { background: var(--board); color: var(--board-fg); border-radius: 12px; padding: 16px 14px 14px; box-shadow: var(--shadow); overflow: hidden; }
+.painel-topo { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 12px; }
+.painel-topo b { font: 700 18px/1 var(--f-display); letter-spacing: .12em; color: var(--accent); }
+.painel-topo span { font: 500 14px/1 var(--f-display); letter-spacing: .08em; color: var(--board-dim); font-variant-numeric: tabular-nums; }
+.linhas { display: flex; flex-direction: column; gap: 6px; }
+.linha { display: grid; grid-template-columns: 3.1em 1fr auto; gap: 10px; align-items: center; font-family: var(--f-display); font-variant-numeric: tabular-nums; }
+.linha .hora { color: var(--board-dim); font-weight: 500; font-size: 16px; }
+.flaps { display: flex; gap: 2px; min-width: 0; overflow: hidden; }
+.flap { width: 1.05em; height: 1.45em; background: var(--board-cell); border-radius: 2px; display: grid; place-items: center; font-weight: 700; font-size: 17px; position: relative; flex: none; }
+.flap::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,.55); }
+.status { font-weight: 600; font-size: 14px; letter-spacing: .08em; text-transform: uppercase; color: var(--board-dim); white-space: nowrap; }
+.status.vivo { color: var(--accent); animation: pisca 1.6s steps(2, jump-none) infinite; }
+.linha.sua .hora { color: var(--accent); }
+@keyframes pisca { 50% { opacity: .35; } }
+
+/* Abertura */
+.abertura { display: flex; flex-direction: column; gap: 16px; padding-block: 8px; }
+.abertura h1 { font-size: clamp(40px, 9vw, 64px); font-weight: 700; text-transform: uppercase; letter-spacing: -.005em; }
+.abertura h1 em { font-style: normal; background: var(--accent); color: var(--accent-ink); padding: 0 .12em; box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.abertura .lead { font-size: 19px; color: var(--muted); max-width: 34em; }
+.fatos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.fato { border-top: 3px solid var(--ink); padding-top: 8px; display: flex; flex-direction: column; gap: 2px; }
+.fato b { font: 700 22px/1.1 var(--f-display); text-transform: uppercase; }
+.fato span { font-size: 14px; color: var(--muted); line-height: 1.35; }
+.aviso-repetido { font-size: 15px; color: var(--muted); }
+
+.btn { appearance: none; border: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  min-height: 54px; padding: 0 24px; border-radius: 8px; font: 700 20px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; }
+.btn { text-decoration: none; }
+.btn-principal { background: var(--accent); color: var(--accent-ink); box-shadow: 0 2px 0 rgba(0,0,0,.25); }
+.btn-principal:hover { filter: brightness(1.04); }
+.btn-principal:active { transform: translateY(1px); box-shadow: none; }
+.btn-principal[disabled] { opacity: .6; cursor: progress; }
+.btn-secundario { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+.btn-secundario:hover { border-color: var(--muted); }
+.btn svg { width: 22px; height: 22px; }
+.acoes { display: flex; gap: 12px; flex-wrap: wrap; }
+.acoes .btn-principal { flex: 1 1 220px; }
+
+/* Rota (progresso) */
+.rota { position: relative; padding-block: 0 4px; }
+.paradas { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); position: relative; }
+.paradas::before, .rota-feita { content: ""; position: absolute; top: 15px; left: calc(100% / 14); height: 3px; border-radius: 2px; }
+.paradas::before { right: calc(100% / 14); background: repeating-linear-gradient(90deg, var(--line) 0 8px, transparent 8px 14px); }
+.rota-feita { background: var(--ink); transition: width .5s ease; z-index: 0; }
+.parada { display: flex; flex-direction: column; align-items: center; gap: 6px; position: relative; z-index: 1; }
+.ponto { width: 32px; height: 32px; border-radius: 50%; background: var(--bg); border: 3px solid var(--line); display: grid; place-items: center; }
+.parada.feita .ponto { border-color: var(--ink); background: var(--ink); }
+.parada.atual .ponto { border-color: var(--ink); background: var(--accent); }
+.parada.atual .ponto svg { width: 16px; height: 16px; color: var(--accent-ink); }
+.codigo { font: 700 15px/1 var(--f-display); letter-spacing: .08em; color: var(--muted); }
+.parada.atual .codigo, .parada.feita .codigo { color: var(--ink); }
+
+/* Trecho */
+.trecho { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 22px 20px 24px; display: flex; flex-direction: column; gap: 26px; }
+.trecho-cab { display: flex; flex-direction: column; gap: 8px; }
+.trecho-cab h2 { font-size: clamp(30px, 6.5vw, 42px); font-weight: 700; text-transform: uppercase; }
+.pergunta { display: flex; flex-direction: column; gap: 10px; border: 0; margin: 0; padding: 0; min-width: 0; }
+.pergunta legend, .pergunta > label.enunciado { padding: 0; font-weight: 600; font-size: 18px; line-height: 1.35; margin-bottom: 10px; }
+.pergunta .ajuda { font-weight: 400; font-size: 15px; color: var(--muted); display: block; margin-top: 2px; }
+.opcional { font-weight: 400; font-size: 14px; color: var(--muted); margin-left: .35em; }
+.opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.op { appearance: none; cursor: pointer; text-align: left; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+  border-radius: 6px; padding: 10px 14px; font-size: 16px; line-height: 1.3; display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
+  transition: background .15s, border-color .15s; }
+.op:hover { border-color: var(--muted); }
+.op .marca-op { width: 18px; height: 18px; border-radius: 4px; border: 1.5px solid var(--muted); flex: none; display: grid; place-items: center; }
+.op.unica .marca-op { border-radius: 50%; }
+.op[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+.op[aria-pressed="true"] .marca-op { border-color: var(--accent-ink); background: var(--accent-ink); }
+.op[aria-pressed="true"] .marca-op::after { content: ""; width: 8px; height: 5px; border: 2px solid var(--accent); border-top: 0; border-right: 0; transform: translateY(-1px) rotate(-45deg); }
+.op[aria-disabled="true"] { opacity: .45; cursor: not-allowed; }
+.campo { width: 100%; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 6px; padding: 12px 14px; font: inherit; font-size: 16px; }
+.campo:focus { border-color: var(--ink); outline: none; box-shadow: 0 0 0 3px var(--accent-soft); }
+textarea.campo { min-height: 96px; resize: vertical; }
+.erro { color: var(--err); font-size: 15px; font-weight: 600; }
+.pergunta.invalida .opcoes .op, .pergunta.invalida .campo { border-color: var(--err); }
+
+.grade { display: flex; flex-direction: column; gap: 12px; }
+.grade-item { border: 1.5px solid var(--line); border-radius: 8px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+.grade-item b { font: 700 20px/1.1 var(--f-display); text-transform: uppercase; letter-spacing: .01em; }
+.grade-item p { font-size: 15px; color: var(--muted); }
+.segmento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.segmento .op { justify-content: center; text-align: center; padding: 10px 6px; font-size: 15px; }
+.segmento .op .marca-op { display: none; }
+
+.curiosidade { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: start; background: var(--accent-soft); border-radius: 10px; padding: 16px; }
+.curiosidade .placa { width: 38px; height: 38px; font: 700 22px/1 var(--f-display); }
+.curiosidade b { display: block; font: 700 15px/1 var(--f-display); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 6px; }
+.curiosidade p { font-size: 16px; line-height: 1.5; }
+
+.contato-campos { display: grid; gap: 14px; }
+.contato-campos label { display: flex; flex-direction: column; gap: 6px; font-weight: 600; font-size: 16px; }
+.consent { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 10px; align-items: start; font-size: 15px; color: var(--muted); cursor: pointer; }
+.consent input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--ink); }
+.nota-anonima { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: var(--muted); border-left: 3px solid var(--accent); padding-left: 12px; }
+.isca { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+/* Cartão de embarque */
+.fim { display: flex; flex-direction: column; gap: 20px; }
+.fim h1 { font-size: clamp(36px, 8vw, 54px); font-weight: 700; text-transform: uppercase; }
+.bilhete { background: var(--surface); border-radius: 14px; box-shadow: var(--shadow); overflow: hidden; position: relative; }
+.bilhete-topo { background: var(--board); color: var(--board-fg); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.bilhete-topo b { font: 700 18px/1 var(--f-display); letter-spacing: .14em; color: var(--accent); text-transform: uppercase; }
+.bilhete-topo span { font: 600 14px/1 var(--f-display); letter-spacing: .1em; color: var(--board-dim); text-transform: uppercase; }
+.bilhete-corpo { padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+.trajeto { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 12px; }
+.trajeto .iata { font: 700 44px/1 var(--f-display); letter-spacing: .02em; }
+.trajeto .cidade { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; font-family: var(--f-display); font-weight: 600; }
+.trajeto .voo { height: 2px; background: repeating-linear-gradient(90deg, var(--muted) 0 6px, transparent 6px 11px); position: relative; }
+.trajeto .voo svg { position: absolute; left: 50%; top: 50%; width: 24px; height: 24px; transform: translate(-50%, -50%); background: var(--surface); padding: 0 2px; }
+.dir { text-align: right; }
+.campos-bilhete { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; }
+.campos-bilhete div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.campos-bilhete .valor { font: 700 20px/1.15 var(--f-display); text-transform: uppercase; overflow-wrap: anywhere; }
+.campos-bilhete .largo { grid-column: 1 / -1; }
+.perfil-nome { font: 700 clamp(30px, 7vw, 40px)/1 var(--f-display); text-transform: uppercase; background: var(--accent); color: var(--accent-ink); padding: 6px 10px; align-self: flex-start; border-radius: 4px; }
+.perfil-texto { font-size: 17px; }
+.picote { position: relative; border-top: 2px dashed var(--line); margin: 0 18px; }
+.picote::before, .picote::after { content: ""; position: absolute; top: -13px; width: 24px; height: 24px; border-radius: 50%; background: var(--bg); }
+.picote::before { left: -31px; } .picote::after { right: -31px; }
+.canhoto { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+.estimativa b { font: 700 30px/1.05 var(--f-display); display: block; font-variant-numeric: tabular-nums; }
+.estimativa p { font-size: 15px; color: var(--muted); }
+.codigo-barras { height: 46px; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 7px, transparent 7px 9px, var(--ink) 9px 10px, transparent 10px 13px); opacity: .85; border-radius: 2px; }
+.compartilhar { display: flex; flex-direction: column; gap: 12px; }
+.compartilhar p { color: var(--muted); }
+.copiado { font-size: 15px; color: var(--ok); font-weight: 600; min-height: 1.4em; }
+.falha { background: var(--surface); border: 2px solid var(--err); border-radius: 10px; padding: 14px 16px; color: var(--ink); }
+.rodape { text-align: center; font-size: 14px; color: var(--muted); padding-block: 8px; }
+
+/* Calculadora do cartão */
+.calc { border: 2px solid var(--ink); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+.calc-titulo { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.calc-titulo b { font: 700 22px/1.05 var(--f-display); text-transform: uppercase; }
+.calc-vazio { color: var(--muted); font-size: 15px; }
+.barras { display: flex; flex-direction: column; gap: 12px; }
+.barra { display: flex; flex-direction: column; gap: 5px; }
+.barra-rotulo { display: flex; justify-content: space-between; gap: 10px; font-size: 15px; }
+.barra-rotulo span { min-width: 0; }
+.barra-rotulo strong { font: 700 20px/1 var(--f-display); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.trilho { height: 14px; border-radius: 3px; background: var(--line); overflow: hidden; }
+.enche { height: 100%; border-radius: 3px; background: var(--muted); transition: width .6s ease; }
+.barra.boa .enche { background: var(--accent); box-shadow: inset 0 0 0 1.5px var(--ink); }
+.ganho { background: var(--accent); color: var(--accent-ink); border-radius: 6px; padding: 10px 12px; font-size: 16px; line-height: 1.4; }
+.ganho b { font: 700 22px/1.1 var(--f-display); display: block; }
+.calc-nota { font-size: 13px; color: var(--muted); line-height: 1.45; }
+
+.entra { animation: entra .35s ease both; }
+@keyframes entra { from { opacity: .001; transform: translateY(8px); } }
+@media (max-width: 420px) {
+  body { font-size: 16px; }
+  .fatos { grid-template-columns: 1fr; }
+  .fato { flex-direction: row; align-items: baseline; gap: 10px; }
+  .trecho { padding: 18px 14px 20px; }
+  .flap { font-size: 15px; width: .92em; }
+  .linha { grid-template-columns: 2.8em 1fr auto; gap: 6px; }
+  .status { font-size: 12px; }
+  .codigo { font-size: 13px; letter-spacing: .04em; }
+  .ponto { width: 28px; height: 28px; }
+  .paradas::before, .rota-feita { top: 13px; }
+  .segmento .op { font-size: 14px; }
+  .trajeto .iata { font-size: 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="topo">
+    <div class="marca">
+      <span class="placa" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg></span>
+      <span id="marca-texto">Pesquisa do Viajante</span>
+    </div>
+    <span class="selo">Anônima · 3 min</span>
+  </header>
+
+  <!-- ABERTURA -->
+  <section id="tela-inicio" class="abertura">
+    <div class="painel" aria-label="Painel de partidas">
+      <div class="painel-topo"><b>Partidas</b><span id="relogio">--:--</span></div>
+      <div class="linhas" id="linhas"></div>
+    </div>
+    <h1>Para onde você vai <em>de verdade</em> na próxima viagem?</h1>
+    <p class="lead">Uma pesquisa rápida e anônima sobre como você viaja e usa suas milhas. No final, você recebe o seu <strong>perfil de viajante</strong> e uma estimativa de quanto suas milhas podem valer.</p>
+    <div class="fatos">
+      <div class="fato"><b>Anônima</b><span>Não pedimos nome. Contato só se você quiser.</span></div>
+      <div class="fato"><b>3 minutos</b><span>Quase tudo é de tocar e escolher.</span></div>
+      <div class="fato"><b>Resultado</b><span>Seu perfil e suas milhas em reais.</span></div>
+    </div>
+    <p class="aviso-repetido" id="aviso-repetido" hidden>Você já respondeu neste aparelho. Pode responder de novo se quiser.</p>
+    <div class="acoes">
+      <button class="btn btn-principal" id="btn-embarcar" type="button">Embarcar
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- PESQUISA -->
+  <section id="tela-pesquisa" hidden>
+    <nav class="rota" aria-label="Progresso da pesquisa">
+      <ol class="paradas" id="paradas"></ol>
+      <div class="rota-feita" id="rota-feita" style="width:0"></div>
+    </nav>
+    <form class="trecho entra" id="trecho" novalidate></form>
+  </section>
+
+  <!-- FIM -->
+  <section id="tela-fim" class="fim" hidden></section>
+
+  <footer class="rodape" id="rodape"></footer>
+</div>
+
+<script>
+var DADOS = <?!= dados ?>;
+</script>
+<script>
+(function () {
+  'use strict';
+  var CFG = DADOS.config, TRECHOS = DADOS.trechos, CT = DADOS.contato;
+  var PARADAS = TRECHOS.map(function (t) { return { codigo: t.codigo, nome: t.nome }; }).concat([{ codigo: CT.codigo, nome: CT.nome }]);
+  var CHAVE = 'pesquisa_viajante_v1';
+  var estado = { i: 0, resp: {} };
+  var reduzido = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function guarda(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function le(k) { try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch (e) { return null; } }
+  function apaga(k) { try { localStorage.removeItem(k); } catch (e) {} }
+  function $(id) { return document.getElementById(id); }
+  function h(tag, attrs, filhos) {
+    var e = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === 'text') e.textContent = attrs[k];
+      else if (k === 'html') e.innerHTML = attrs[k];
+      else if (k.slice(0, 2) === 'on') e.addEventListener(k.slice(2), attrs[k]);
+      else if (attrs[k] !== false && attrs[k] != null) e.setAttribute(k, attrs[k]);
+    });
+    (filhos || []).forEach(function (f) { if (f) e.appendChild(typeof f === 'string' ? document.createTextNode(f) : f); });
+    return e;
+  }
+  var AVIAO = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>';
+
+  /* ---------- Painel de partidas ---------- */
+  var DESTINOS = ['LISBOA', 'TÓQUIO', 'CANCÚN', 'ROMA', 'SANTIAGO', 'ORLANDO', 'ATENAS', 'PARIS', 'NORONHA', 'CAPADÓCIA', 'MALDIVAS', 'BARILOCHE', 'MARRAKESH', 'QUEENSTOWN'];
+  var LETRAS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  var LARG = window.innerWidth < 420 ? 11 : 13;
+  var linhasPainel = [
+    { hora: '07:40', dest: 'LISBOA', status: 'Embarque' },
+    { hora: '09:15', dest: 'TÓQUIO', status: 'No horário' },
+    { hora: '11:05', dest: 'CANCÚN', status: 'Confirmado' },
+    { hora: '??:??', dest: 'SEU DESTINO', status: 'A definir', sua: true }
+  ];
+  function ajusta(t) { t = t.slice(0, LARG); while (t.length < LARG) t += ' '; return t; }
+  function montaPainel() {
+    var box = $('linhas');
+    linhasPainel.forEach(function (l, n) {
+      var flaps = h('div', { 'class': 'flaps', 'aria-label': l.dest });
+      ajusta(l.dest).split('').forEach(function (c) { flaps.appendChild(h('span', { 'class': 'flap', 'aria-hidden': 'true', text: c })); });
+      l.el = flaps;
+      box.appendChild(h('div', { 'class': 'linha' + (l.sua ? ' sua' : '') }, [
+        h('span', { 'class': 'hora', text: l.hora }), flaps, h('span', { 'class': 'status' + (l.sua ? ' vivo' : ''), text: l.status })
+      ]));
+    });
+  }
+  function vira(l, destino) {
+    var alvo = ajusta(destino), cels = l.el.children;
+    l.el.setAttribute('aria-label', destino);
+    if (reduzido) { for (var k = 0; k < cels.length; k++) cels[k].textContent = alvo[k]; return; }
+    for (var j = 0; j < cels.length; j++) (function (cel, fim, atraso) {
+      var passos = 4 + Math.floor(Math.random() * 5), p = 0;
+      setTimeout(function giro() {
+        if (p++ >= passos) { cel.textContent = fim; return; }
+        cel.textContent = LETRAS[Math.floor(Math.random() * LETRAS.length)];
+        setTimeout(giro, 55);
+      }, atraso);
+    })(cels[j], alvo[j], j * 35);
+  }
+  var giroN = 3;
+  function girar() {
+    if ($('tela-inicio').hidden) return;
+    var l = linhasPainel[giroN % 3];
+    var d = DESTINOS[Math.floor(Math.random() * DESTINOS.length)];
+    vira(l, d); giroN++;
+  }
+  function relogio() {
+    var d = new Date();
+    $('relogio').textContent = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+
+  /* ---------- Rota ---------- */
+  function desenhaRota() {
+    var ol = $('paradas'); ol.innerHTML = '';
+    PARADAS.forEach(function (p, n) {
+      var cls = 'parada' + (n < estado.i ? ' feita' : n === estado.i ? ' atual' : '');
+      var ponto = h('span', { 'class': 'ponto', html: n === estado.i ? AVIAO : '' });
+      ol.appendChild(h('li', { 'class': cls, 'aria-current': n === estado.i ? 'step' : false, title: p.nome }, [
+        ponto, h('span', { 'class': 'codigo', text: p.codigo })
+      ]));
+    });
+    var frac = estado.i / (PARADAS.length - 1);
+    $('rota-feita').style.width = 'calc((100% - 100% / 7) * ' + frac + ')';
+  }
+
+  /* ---------- Perguntas ---------- */
+  function valor(id) { return estado.resp[id]; }
+  function define(id, v) { estado.resp[id] = v; guarda(CHAVE, estado); }
+
+  function botaoOpcao(texto, tipo, marcado, aoClicar) {
+    return h('button', { type: 'button', 'class': 'op ' + tipo, 'aria-pressed': marcado ? 'true' : 'false', onclick: aoClicar },
+      [h('span', { 'class': 'marca-op', 'aria-hidden': 'true' }), texto]);
+  }
+
+  function renderUnica(p, box) {
+    var grupo = h('div', { 'class': 'opcoes', role: 'group' });
+    p.opcoes.forEach(function (o) {
+      grupo.appendChild(botaoOpcao(o, 'unica', valor(p.id) === o, function () {
+        define(p.id, valor(p.id) === o && !p.obrigatoria ? '' : o);
+        atualizaGrupo(grupo, p);
+        limpaErro(box);
+      }));
+    });
+    box.appendChild(grupo);
+  }
+  function renderMultipla(p, box) {
+    var grupo = h('div', { 'class': 'opcoes', role: 'group' });
+    p.opcoes.forEach(function (o) {
+      grupo.appendChild(botaoOpcao(o, 'multi', (valor(p.id) || []).indexOf(o) >= 0, function (ev) {
+        var lista = (valor(p.id) || []).slice(), pos = lista.indexOf(o);
+        if (pos >= 0) lista.splice(pos, 1);
+        else {
+          if (p.max && lista.length >= p.max) return;
+          lista.push(o);
+        }
+        define(p.id, lista);
+        atualizaGrupo(grupo, p);
+        limpaErro(box);
+      }));
+    });
+    box.appendChild(grupo);
+    atualizaGrupo(grupo, p);
+  }
+  function atualizaGrupo(grupo, p) {
+    var v = valor(p.id), botoes = grupo.querySelectorAll('.op');
+    var lista = Array.isArray(v) ? v : [v];
+    var cheio = p.max && lista.length >= p.max;
+    for (var k = 0; k < botoes.length; k++) {
+      var o = p.opcoes[k], on = lista.indexOf(o) >= 0;
+      botoes[k].setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (p.tipo === 'multipla') botoes[k].setAttribute('aria-disabled', cheio && !on ? 'true' : 'false');
+    }
+  }
+  function renderGrade(p, box) {
+    var g = h('div', { 'class': 'grade' });
+    p.linhas.forEach(function (l) {
+      var seg = h('div', { 'class': 'segmento', role: 'group', 'aria-label': l.rotulo });
+      var fake = { id: l.id, opcoes: p.colunas, tipo: 'unica' };
+      p.colunas.forEach(function (c) {
+        seg.appendChild(botaoOpcao(c, 'unica', valor(l.id) === c, function () { define(l.id, c); atualizaGrupo(seg, fake); limpaErro(box); }));
+      });
+      g.appendChild(h('div', { 'class': 'grade-item' }, [h('b', { text: l.rotulo }), h('p', { text: l.descricao }), seg]));
+    });
+    box.appendChild(g);
+  }
+  function renderTexto(p, box, curto) {
+    var attrs = { id: 'f_' + p.id, 'class': 'campo', placeholder: p.placeholder || '', maxlength: curto ? 120 : 1000,
+      oninput: function (e) { define(p.id, e.target.value); } };
+    var c = h(curto ? 'input' : 'textarea', attrs);
+    if (curto) c.type = 'text';
+    c.value = valor(p.id) || '';
+    box.appendChild(c);
+  }
+
+  function enunciado(p, tag, paraId) {
+    var filhos = [p.titulo];
+    if (!p.obrigatoria) filhos.push(h('span', { 'class': 'opcional', text: '(opcional)' }));
+    if (p.ajuda) filhos.push(h('span', { 'class': 'ajuda', text: p.ajuda }));
+    return h(tag, paraId ? { 'class': 'enunciado', 'for': paraId } : null, filhos);
+  }
+
+  function renderPergunta(p) {
+    var texto = p.tipo === 'texto' || p.tipo === 'texto_curto';
+    var box = h(texto ? 'div' : 'fieldset', { 'class': 'pergunta', 'data-id': p.id });
+    box.appendChild(enunciado(p, texto ? 'label' : 'legend', texto ? 'f_' + p.id : null));
+    if (p.tipo === 'unica') renderUnica(p, box);
+    else if (p.tipo === 'multipla') renderMultipla(p, box);
+    else if (p.tipo === 'grade') renderGrade(p, box);
+    else renderTexto(p, box, p.tipo === 'texto_curto');
+    return box;
+  }
+
+  function limpaErro(box) {
+    box.classList.remove('invalida');
+    var e = box.querySelector('.erro'); if (e) e.remove();
+  }
+  function marcaErro(box, msg) {
+    limpaErro(box);
+    box.classList.add('invalida');
+    box.appendChild(h('p', { 'class': 'erro', role: 'alert', text: msg }));
+  }
+  function respondida(p) {
+    if (p.tipo === 'grade') return p.linhas.every(function (l) { return !!valor(l.id); });
+    var v = valor(p.id);
+    return Array.isArray(v) ? v.length > 0 : !!v;
+  }
+
+  function cabecalho(n, t) {
+    return h('div', { 'class': 'trecho-cab' }, [
+      h('span', { 'class': 'rotulo', text: 'Trecho ' + (n + 1) + ' de ' + PARADAS.length + ' · ' + t.nome }),
+      h('h2', { text: t.titulo })
+    ]);
+  }
+  function curiosidade(txt) {
+    return h('aside', { 'class': 'curiosidade' }, [
+      h('span', { 'class': 'placa', 'aria-hidden': 'true', text: '?' }),
+      h('div', null, [h('b', { text: 'Você sabia?' }), h('p', { text: txt })])
+    ]);
+  }
+  function botoesNav(ultimo) {
+    var acoes = h('div', { 'class': 'acoes' });
+    acoes.appendChild(h('button', { type: 'button', 'class': 'btn btn-secundario', onclick: voltar, text: 'Voltar' }));
+    acoes.appendChild(h('button', { type: 'submit', 'class': 'btn btn-principal', id: 'btn-seguir',
+      html: ultimo ? 'Ver meu perfil' : 'Próximo trecho <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>' }));
+    return acoes;
+  }
+
+  function renderTrecho() {
+    var f = $('trecho');
+    f.innerHTML = '';
+    f.classList.remove('entra'); void f.offsetWidth; f.classList.add('entra');
+    desenhaRota();
+    if (estado.i < TRECHOS.length) {
+      var t = TRECHOS[estado.i];
+      f.appendChild(cabecalho(estado.i, t));
+      t.perguntas.forEach(function (p) { f.appendChild(renderPergunta(p)); });
+      if (t.calculadora) {
+        var calc = h('section', { 'class': 'calc', 'aria-live': 'polite' });
+        f.appendChild(calc);
+        desenhaCalc(calc, true);
+        f.onclick = function () { setTimeout(function () { desenhaCalc(calc, true); }, 0); };
+      } else f.onclick = null;
+      f.appendChild(curiosidade(t.curiosidade));
+      f.appendChild(botoesNav(false));
+    } else {
+      f.onclick = null;
+      renderContato(f);
+    }
+  }
+
+  function renderContato(f) {
+    f.appendChild(cabecalho(estado.i, { nome: CT.nome, titulo: 'Última parada: quer receber novidades?' }));
+    f.appendChild(h('p', { 'class': 'nota-anonima', text: 'Até aqui, tudo foi anônimo. Se quiser uma conversa ou um aviso quando a consultoria abrir, deixe um contato. Ele fica junto das suas respostas só para prepararmos algo do seu jeito.' }));
+    var p = { id: CT.interesse.id, titulo: CT.interesse.titulo, opcoes: CT.interesse.opcoes, tipo: 'unica', obrigatoria: false };
+    var box = renderPergunta(p);
+    f.appendChild(box);
+    var campos = h('div', { 'class': 'contato-campos', id: 'contato-campos' });
+    function campo(id, rotulo, tipo, ph, auto) {
+      var inp = h('input', { id: 'f_' + id, 'class': 'campo', type: tipo, placeholder: ph, autocomplete: auto, maxlength: 120,
+        inputmode: tipo === 'tel' ? 'tel' : false, oninput: function (e) { define(id, e.target.value); limpaErro(campos); } });
+      inp.value = valor(id) || '';
+      return h('label', { 'for': 'f_' + id }, [rotulo, inp]);
+    }
+    campos.appendChild(campo('contato_nome', 'Primeiro nome', 'text', 'Como podemos te chamar?', 'given-name'));
+    campos.appendChild(campo('contato_whatsapp', 'WhatsApp', 'tel', '(31) 9 9999-9999', 'tel'));
+    campos.appendChild(campo('contato_email', 'E-mail', 'email', 'voce@email.com', 'email'));
+    var ck = h('input', { type: 'checkbox', id: 'f_consent', onchange: function (e) { define('contato_consentimento', e.target.checked); limpaErro(campos); } });
+    ck.checked = valor('contato_consentimento') === true;
+    campos.appendChild(h('label', { 'class': 'consent', 'for': 'f_consent' }, [ck, h('span', { text: 'Autorizo o contato pelos canais acima sobre a consultoria de viagens. Nada de spam, e você pode pedir para sair quando quiser.' })]));
+    f.appendChild(campos);
+    f.appendChild(h('div', { 'class': 'isca', 'aria-hidden': 'true' }, [h('input', { id: 'f_site', name: 'site', tabindex: '-1', autocomplete: 'off' })]));
+    f.appendChild(botoesNav(true));
+
+    function mostraCampos() {
+      var v = valor(CT.interesse.id);
+      campos.hidden = !(v && v !== CT.interesse.opcoes[2]);
+    }
+    box.addEventListener('click', function () { setTimeout(mostraCampos, 0); });
+    mostraCampos();
+  }
+
+  function valida() {
+    var f = $('trecho'), primeiro = null;
+    if (estado.i < TRECHOS.length) {
+      TRECHOS[estado.i].perguntas.forEach(function (p) {
+        if (!p.obrigatoria) return;
+        var box = f.querySelector('[data-id="' + p.id + '"]');
+        if (!respondida(p)) {
+          marcaErro(box, p.tipo === 'grade' ? 'Marque uma opção em cada serviço.' : p.tipo === 'multipla' ? 'Marque pelo menos uma opção.' : 'Escolha uma opção para seguir.');
+          primeiro = primeiro || box;
+        }
+      });
+    } else {
+      var v = valor(CT.interesse.id);
+      if (v && v !== CT.interesse.opcoes[2]) {
+        var campos = $('contato-campos');
+        var zap = (valor('contato_whatsapp') || '').replace(/\D/g, ''), mail = (valor('contato_email') || '').trim();
+        var msg = '';
+        if (zap.length < 10 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail)) msg = 'Deixe um WhatsApp com DDD ou um e-mail válido para podermos falar com você.';
+        else if (valor('contato_consentimento') !== true) msg = 'Marque a autorização de contato para seguir.';
+        if (msg) { marcaErro(campos, msg); primeiro = campos; }
+      }
+    }
+    if (primeiro) primeiro.scrollIntoView({ behavior: reduzido ? 'auto' : 'smooth', block: 'center' });
+    return !primeiro;
+  }
+
+  function topo() { window.scrollTo({ top: 0, behavior: reduzido ? 'auto' : 'smooth' }); }
+  function voltar() {
+    if (estado.i === 0) { mostra('inicio'); return; }
+    estado.i--; guarda(CHAVE, estado); renderTrecho(); topo();
+  }
+  function seguir(ev) {
+    ev.preventDefault();
+    if (!valida()) return;
+    if (estado.i < TRECHOS.length) { estado.i++; guarda(CHAVE, estado); renderTrecho(); topo(); return; }
+    enviar();
+  }
+
+  function mostra(tela) {
+    $('tela-inicio').hidden = tela !== 'inicio';
+    $('tela-pesquisa').hidden = tela !== 'pesquisa';
+    $('tela-fim').hidden = tela !== 'fim';
+  }
+
+  /* ---------- Envio ---------- */
+  function montaEnvio() {
+    var r = {}, resp = estado.resp;
+    Object.keys(resp).forEach(function (k) { r[k] = resp[k]; });
+    var v = resp[CT.interesse.id];
+    if (!v || v === CT.interesse.opcoes[2]) {
+      ['contato_nome', 'contato_whatsapp', 'contato_email', 'contato_consentimento'].forEach(function (k) { delete r[k]; });
+    }
+    var isca = $('f_site'); if (isca && isca.value) r._site = isca.value;
+    var res = calculaPerfil(resp), m = calculaMilhas(resp);
+    r._perfil = (PERFIS[res.perfil] || PERFIS.curioso)[0];
+    if (m) { r._milhas_hoje = Math.round(m.atual); r._milhas_estrategia = Math.round(m.boa); r._ganho_milhas = Math.round(m.dif); }
+    return r;
+  }
+  function enviar() {
+    var btn = $('btn-seguir');
+    btn.disabled = true; btn.textContent = 'Enviando…';
+    var velha = document.querySelector('.falha'); if (velha) velha.remove();
+    var dados = montaEnvio();
+    function ok() {
+      var resultado = calculaPerfil(estado.resp);
+      guarda(CHAVE + '_feito', resultado);
+      apaga(CHAVE);
+      mostraFim(resultado);
+    }
+    function falhou(e) {
+      btn.disabled = false; btn.textContent = 'Tentar enviar de novo';
+      $('trecho').appendChild(h('p', { 'class': 'falha', role: 'alert', text: 'Não conseguimos enviar agora. Confira sua internet e toque em "Tentar enviar de novo". Suas respostas continuam aqui.' }));
+    }
+    if (DADOS.endpoint) {
+      fetch(DADOS.endpoint, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(dados) })
+        .then(function (r) { return r.json(); })
+        .then(function (j) { if (j && j.ok) ok(); else falhou(j); })
+        .catch(falhou);
+    } else if (window.google && google.script && google.script.run) {
+      google.script.run.withSuccessHandler(ok).withFailureHandler(falhou).salvarResposta(dados);
+    } else {
+      console.log('[prévia] resposta que iria para a planilha:', dados);
+      setTimeout(ok, 600);
+    }
+  }
+
+  /* ---------- Calculadora do cartão ---------- */
+  var GASTO = { 'Até R$ 2 mil': 1500, 'R$ 2 a 5 mil': 3500, 'R$ 5 a 10 mil': 7500, 'R$ 10 a 20 mil': 15000, 'Mais de R$ 20 mil': 25000 };
+  function calculaMilhas(r) {
+    var gasto = GASTO[r.gasto_cartao];
+    if (!gasto || !r.cartao_categoria) return null;
+    var usd = gasto * 12 / CFG.dolar;
+    var taxa = CFG.pontos_categoria[r.cartao_categoria] || 1;
+    var disseQuePontua = r.cartao_pontua === 'Sim, e transfiro para companhias aéreas' || r.cartao_pontua === 'Sim, mas não sei aproveitar';
+    var semPontos = r.cartao_pontua === 'Não' ||
+      (CFG.bancos_sem_pontos.indexOf(r.cartao_banco) >= 0 && r.cartao_categoria !== 'Black ou Infinite' && !disseQuePontua);
+    if (semPontos) taxa = 0;
+    var jaTransfere = r.cartao_pontua === 'Sim, e transfiro para companhias aéreas';
+    var atual = usd * taxa * (jaTransfere ? 1 + CFG.bonus_transferencia / 2 : 1);
+    var taxaBoa = 2;
+    for (var k = 0; k < CFG.pontos_estrategia.length; k++) {
+      if (gasto <= CFG.pontos_estrategia[k][0]) { taxaBoa = CFG.pontos_estrategia[k][1]; break; }
+    }
+    taxaBoa = Math.max(taxaBoa, taxa);
+    var boa = usd * taxaBoa * (1 + CFG.bonus_transferencia);
+    var dif = Math.max(0, boa - atual);
+    return { gasto: gasto, atual: atual, boa: boa, dif: dif, valor: dif / 1000 * CFG.milheiro_referencia,
+      semPontos: semPontos, banco: r.cartao_banco, categoria: r.cartao_categoria };
+  }
+  function milhasTxt(n) { return n < 1000 ? Math.round(n).toLocaleString('pt-BR') : Math.round(n / 1000).toLocaleString('pt-BR') + ' mil'; }
+  function desenhaCalc(box, noTrecho) {
+    var c = calculaMilhas(estado.resp);
+    box.innerHTML = '';
+    box.appendChild(h('div', { 'class': 'calc-titulo' }, [h('b', { text: 'Quanto seu cartão pode render' }), h('span', { 'class': 'rotulo', text: 'Milhas por ano' })]));
+    if (!c) {
+      box.appendChild(h('p', { 'class': 'calc-vazio', text: noTrecho
+        ? 'Escolha acima quanto você gasta no cartão e a categoria dele. A conta aparece aqui na hora.'
+        : 'Sem o gasto e o cartão, não deu para fazer a conta.' }));
+      return;
+    }
+    var max = Math.max(c.boa, 1);
+    function barra(rotulo, valor, boa) {
+      return h('div', { 'class': 'barra' + (boa ? ' boa' : '') }, [
+        h('div', { 'class': 'barra-rotulo' }, [h('span', { text: rotulo }), h('strong', { text: milhasTxt(valor) })]),
+        h('div', { 'class': 'trilho' }, [h('div', { 'class': 'enche', style: 'width:' + Math.max(2, valor / max * 100) + '%' })])
+      ]);
+    }
+    var nomeCartao = (c.banco && c.banco !== 'Outro' ? c.banco + ' ' : '') + c.categoria.toLowerCase();
+    box.appendChild(h('div', { 'class': 'barras' }, [
+      barra(c.semPontos ? 'Hoje (seu cartão não acumula pontos)' : 'Hoje, com o seu cartão (' + nomeCartao + ')', c.atual, false),
+      barra('Com estratégia, gastando o mesmo', c.boa, true)
+    ]));
+    if (c.dif > 500) {
+      box.appendChild(h('div', { 'class': 'ganho' }, [
+        h('b', { text: '+' + milhasTxt(c.dif) + ' milhas por ano' }),
+        'Perto de ' + fmtReais(c.valor) + ' em passagens que hoje ficam na mesa, só por saber qual cartão usar e quando transferir.'
+      ]));
+    } else {
+      box.appendChild(h('div', { 'class': 'ganho' }, [h('b', { text: 'Você já está perto do máximo' }),
+        'O próximo passo é usar bem essas milhas: emitir no programa certo rende muito mais do que acumular.']));
+    }
+    box.appendChild(h('p', { 'class': 'calc-nota', text: 'Estimativa ilustrativa para um gasto de ' + fmtReais(c.gasto) + ' por mês, dólar a R$ ' +
+      CFG.dolar.toFixed(2).replace('.', ',') + ', cartão com pontuação adequada ao seu gasto e transferência em campanha com ' +
+      Math.round(CFG.bonus_transferencia * 100) + '% de bônus. Milhas valendo R$ ' + CFG.milheiro_referencia + ' o milheiro.' }));
+  }
+
+  /* ---------- Perfil e estimativa ---------- */
+  var PERFIS = CFG.perfis;
+
+  function tem(v, o) { return Array.isArray(v) ? v.indexOf(o) >= 0 : v === o; }
+  function comeca(v, prefixo) { return typeof v === 'string' && v.indexOf(prefixo) === 0; }
+  function calculaPerfil(r) {
+    var s = { estrategista: 0, familia: 0, conforto: 0, experiencias: 0, economico: 0, delegador: 0, dormente: 0 };
+    if (comeca(r.usa_milhas, 'Uso bem')) s.estrategista += 3;
+    if (comeca(r.cartao_pontua, 'Sim, e transfiro')) s.estrategista += 2;
+    if (r.saldo === '100 mil a 300 mil' || r.saldo === 'Mais de 300 mil') s.estrategista += 1, s.dormente += 1;
+    if (tem(r.companhia, 'Família com crianças')) s.familia += 4;
+    if (comeca(r.cabine, 'Executiva')) s.conforto += 3;
+    if (r.hotel === 'Conforto e serviço') s.conforto += 2;
+    if (r.conexao === 'Só voo direto') s.conforto += 1;
+    if (r.hotel === 'Experiência única') s.experiencias += 2;
+    if (comeca(r.ritmo, 'Intenso')) s.experiencias += 2;
+    ['Ásia', 'África e Oriente Médio', 'Oceania'].forEach(function (d) { if (tem(r.destinos, d)) s.experiencias += 1; });
+    if (comeca(r.cabine, 'Econômica, o mais barato')) s.economico += 3;
+    if (r.hotel === 'Preço') s.economico += 2;
+    if (comeca(r.conexao, 'Tanto faz')) s.economico += 1;
+    if (r.int_planejamento === 'Quero muito') s.delegador += 2;
+    if (tem(r.maior_trabalho, 'Falta de tempo para pesquisar')) s.delegador += 2;
+    if (tem(r.como_planeja, 'Outra pessoa da família resolve')) s.delegador += 1;
+    if (comeca(r.usa_milhas, 'Acumulo') || comeca(r.usa_milhas, 'Já perdi')) s.dormente += 3;
+    if (comeca(r.cartao_pontua, 'Sim, mas não sei')) s.dormente += 2;
+    if (tem(r.problemas, 'Perdi milhas por vencimento')) s.dormente += 1;
+    var melhor = 'curioso', max = 2;
+    Object.keys(s).forEach(function (k) { if (s[k] > max) { max = s[k]; melhor = k; } });
+
+    var MEIO = { 'Até 10 mil': 5000, '10 mil a 50 mil': 30000, '50 mil a 100 mil': 75000, '100 mil a 300 mil': 200000, 'Mais de 300 mil': 350000 };
+    var est = null;
+    if (MEIO[r.saldo]) {
+      var m = MEIO[r.saldo] / 1000;
+      est = { tipo: 'saldo', de: m * CFG.milheiro_venda, ate: m * CFG.milheiro_bem_usado, milhas: MEIO[r.saldo] };
+    } else if (GASTO[r.gasto_cartao]) {
+      var ano = GASTO[r.gasto_cartao] * 12;
+      est = { tipo: 'cartao', de: ano * 1, ate: ano * 2, gasto: GASTO[r.gasto_cartao] };
+    }
+    var destino = Array.isArray(r.destinos) && r.destinos.length && r.destinos[0] !== 'Ainda não sei' ? r.destinos[0] : 'A definir';
+    return { perfil: melhor, destino: destino, estimativa: est, cartao: !!calculaMilhas(r), nome: (r.contato_nome || '').trim().split(' ')[0], cidade: (r.cidade || '').trim() };
+  }
+
+  function fmtReais(n) { return 'R$ ' + (Math.round(n / 50) * 50).toLocaleString('pt-BR'); }
+  function fmtMil(n) { return (Math.round(n / 1000)).toLocaleString('pt-BR') + ' mil'; }
+  var SIGLAS = { 'Nordeste e praias do Brasil': 'NE', 'Serra e interior do Brasil': 'BR', 'América do Sul': 'SA', 'Estados Unidos e Canadá': 'NA',
+    'Caribe e México': 'CB', 'Europa': 'EU', 'Ásia': 'AS', 'África e Oriente Médio': 'AF', 'Oceania': 'OC', 'A definir': '???' };
+
+  function mostraFim(res) {
+    var P = PERFIS[res.perfil] || PERFIS.curioso;
+    var box = $('tela-fim'); box.innerHTML = '';
+    box.appendChild(h('span', { 'class': 'rotulo', text: 'Respostas enviadas. Obrigado!' }));
+    box.appendChild(h('h1', { text: 'Seu cartão de embarque' }));
+
+    var origem = res.cidade ? res.cidade.split(/[,\-/]/)[0].trim() : 'Sua cidade';
+    var trajeto = h('div', { 'class': 'trajeto' }, [
+      h('div', null, [h('div', { 'class': 'iata', text: 'VOCÊ' }), h('div', { 'class': 'cidade', text: origem })]),
+      h('div', { 'class': 'voo', html: AVIAO }),
+      h('div', { 'class': 'dir' }, [h('div', { 'class': 'iata', text: SIGLAS[res.destino] || '???' }), h('div', { 'class': 'cidade', text: res.destino })])
+    ]);
+    var campos = h('div', { 'class': 'campos-bilhete' }, [
+      h('div', null, [h('span', { 'class': 'rotulo', text: 'Passageiro' }), h('span', { 'class': 'valor', text: res.nome || 'Anônimo' })]),
+      h('div', null, [h('span', { 'class': 'rotulo', text: 'Portão' }), h('span', { 'class': 'valor', text: 'Em breve' })]),
+      h('div', { 'class': 'largo' }, [h('span', { 'class': 'rotulo', text: 'Seu perfil de viajante' })])
+    ]);
+    var corpo = h('div', { 'class': 'bilhete-corpo' }, [trajeto, campos, h('span', { 'class': 'perfil-nome', text: P[0] }), h('p', { 'class': 'perfil-texto', text: P[1] })]);
+
+    var canhoto = h('div', { 'class': 'canhoto' });
+    var e = res.estimativa;
+    if (res.cartao) {
+      var calcFim = h('section', { 'class': 'calc' });
+      desenhaCalc(calcFim, false);
+      canhoto.appendChild(calcFim);
+      if (e && e.tipo === 'saldo') canhoto.appendChild(h('p', { 'class': 'calc-nota', text: 'E as ~' + fmtMil(e.milhas) + ' milhas que você já tem podem valer de ' + fmtReais(e.de) + ' a ' + fmtReais(e.ate) + ', conforme o uso.' }));
+    } else if (e && e.tipo === 'saldo') {
+      canhoto.appendChild(h('span', { 'class': 'rotulo', text: 'Suas ~' + fmtMil(e.milhas) + ' milhas podem valer' }));
+      canhoto.appendChild(h('div', { 'class': 'estimativa' }, [h('b', { text: 'de ' + fmtReais(e.de) + ' a ' + fmtReais(e.ate) }),
+        h('p', { text: 'A diferença entre os dois números é o quanto se ganha usando bem: vender milhas rende pouco, emitir a passagem certa rende muito mais. Estimativa ilustrativa.' })]));
+    } else if (e && e.tipo === 'cartao') {
+      canhoto.appendChild(h('span', { 'class': 'rotulo', text: 'Com o seu gasto no cartão, dá para juntar' }));
+      canhoto.appendChild(h('div', { 'class': 'estimativa' }, [h('b', { text: fmtMil(e.de) + ' a ' + fmtMil(e.ate) + ' pontos por ano' }),
+        h('p', { text: 'Considerando um cartão que acumula de 1 a 2 pontos por real, sem gastar nada a mais. Estimativa ilustrativa.' })]));
+    } else {
+      canhoto.appendChild(h('span', { 'class': 'rotulo', text: 'Próxima parada' }));
+      canhoto.appendChild(h('div', { 'class': 'estimativa' }, [h('b', { text: 'Descobrir o que suas milhas valem' }),
+        h('p', { text: 'Muita gente tem pontos esquecidos em cartão e programa de companhia aérea. Vale conferir antes que vençam.' })]));
+    }
+    canhoto.appendChild(h('div', { 'class': 'codigo-barras', 'aria-hidden': 'true' }));
+
+    box.appendChild(h('article', { 'class': 'bilhete entra', 'aria-label': 'Cartão de embarque' }, [
+      h('div', { 'class': 'bilhete-topo' }, [h('b', { text: 'Cartão de embarque' }), h('span', { text: 'Classe: sob medida' })]),
+      corpo, h('div', { 'class': 'picote', 'aria-hidden': 'true' }), canhoto
+    ]));
+
+    var link = DADOS.url || location.href;
+    var msg = 'Fiz a Pesquisa Viagens e meu perfil é "' + P[0] + '". Leva 3 minutos e é anônima. Descubra o seu: ' + link;
+    var aviso = h('p', { 'class': 'copiado', 'aria-live': 'polite' });
+    var texto = h('textarea', { 'class': 'campo', id: 'f_compartilhar', rows: '3', readonly: 'readonly' }); texto.value = msg;
+    box.appendChild(h('div', { 'class': 'compartilhar' }, [
+      h('h2', { text: 'Chame quem viaja com você' }),
+      h('p', { text: CFG.chamada + ' Mande para a família e os amigos: quanto mais gente responder, mais sob medida fica.' }),
+      h('div', { 'class': 'acoes' }, [
+        h('a', { 'class': 'btn btn-principal', href: 'https://wa.me/?text=' + encodeURIComponent(msg), target: '_blank', rel: 'noopener', text: 'Enviar no WhatsApp' }),
+        h('button', { type: 'button', 'class': 'btn btn-secundario', text: 'Copiar texto', onclick: function () {
+          function manual() { texto.hidden = false; texto.focus(); texto.select(); aviso.textContent = 'Texto selecionado. Copie com o botão do seu aparelho.'; }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(msg).then(function () { aviso.textContent = 'Copiado! Agora é só colar no grupo.'; }, manual);
+          } else manual();
+        } })
+      ]),
+      aviso, texto
+    ]));
+    texto.hidden = true;
+    mostra('fim');
+    topo();
+  }
+
+  /* ---------- Início ---------- */
+  function inicia() {
+    $('marca-texto').textContent = CFG.titulo;
+    $('rodape').textContent = CFG.chamada;
+    montaPainel(); relogio();
+    setInterval(relogio, 30000);
+    setInterval(girar, 3200);
+    var rascunho = le(CHAVE);
+    if (rascunho && rascunho.resp) estado = rascunho;
+    if (le(CHAVE + '_feito')) $('aviso-repetido').hidden = false;
+    if (rascunho && estado.i > 0) $('btn-embarcar').firstChild.textContent = 'Continuar de onde parei ';
+    $('btn-embarcar').addEventListener('click', function () { mostra('pesquisa'); renderTrecho(); topo(); });
+    $('trecho').addEventListener('submit', seguir);
+  }
+  inicia();
+})();
+</script>
+</body>
+</html>
