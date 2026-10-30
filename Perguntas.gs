@@ -7,7 +7,7 @@
  *        texto_curto, texto, grade (uma escolha por linha).
  */
 var CONFIG = {
-  titulo: 'Pesquisa Viagens',
+  titulo: 'Fatura na Mala | Pesquisa de Viagens',
   // Link público da pesquisa (vai no botão de compartilhar).
   // Vazio no Apps Script: o botão usa o link do próprio script. Preencher só para gerar o site do GitHub.
   url_publica: '',
@@ -15,7 +15,7 @@ var CONFIG = {
   // Deixe vazio ao colar no Apps Script: assim a página grava direto na planilha de quem publicou.
   endpoint: '',
   // Chamada que aparece no fim e no texto de compartilhar
-  chamada: 'Uma consultoria de viagens sob medida está nascendo. Você ajuda a desenhá-la.',
+  chamada: 'Fatura na Mala · Consultoria e gestão de milhas para transformar os planos da sua família em viagens.',
   // Valor ilustrativo do milheiro usado na estimativa do fim (R$ por 1.000 milhas)
   milheiro_venda: 15,
   milheiro_bem_usado: 45,
@@ -145,8 +145,8 @@ var TRECHOS = [
         opcoes: ['Até R$ 150', 'R$ 150 a 300', 'R$ 300 a 500', 'Mais de R$ 500', 'Não pagaria'] },
       { id: 'preco_planejamento', curto: 'Pagaria: planejamento', tipo: 'unica', titulo: 'E pelo planejamento completo de uma viagem internacional?',
         opcoes: ['Até R$ 300', 'R$ 300 a 700', 'R$ 700 a 1.500', 'Mais de R$ 1.500', 'Não pagaria'] },
-      { id: 'preco_mensal', curto: 'Pagaria: mensal', tipo: 'unica', titulo: 'E por um acompanhamento mensal?',
-        opcoes: ['Até R$ 50', 'R$ 50 a 100', 'R$ 100 a 200', 'Mais de R$ 200', 'Não pagaria'] },
+      { id: 'preco_mensal', curto: 'Pagaria: gestão anual', tipo: 'unica', titulo: 'Quanto você estaria disposto(a) a pagar por um ano de gestão das suas milhas?', ajuda: "Imagine ter alguém ao seu lado para transformar os pontos do cartão em possibilidades de viagem. Acompanhamos seus pontos e vencimentos, orientamos como acumular e ajudamos você a encontrar boas formas de usar suas milhas para chegar ao próximo destino.\n\nAs opções abaixo mostram o valor anual do serviço e o equivalente por mês.",
+        opcoes: ['Menos de R$ 6 mil/ano — abaixo de R$ 500/mês', 'De R$ 6 mil a menos de R$ 9 mil/ano — R$ 500 a menos de R$ 750/mês', 'De R$ 9 mil a R$ 12 mil/ano — R$ 750 a R$ 1.000/mês', 'Mais de R$ 12 mil/ano — acima de R$ 1.000/mês', 'Não contrataria'] },
       { id: 'confianca', curto: 'O que gera confiança', tipo: 'multipla', max: 3, titulo: 'O que faria você confiar numa consultoria de viagens?', ajuda: 'Escolha até 3',
         opcoes: ['Indicação de alguém conhecido', 'Depoimentos de clientes', 'Transparência sobre preços e comissões',
                  'Atendimento pelo WhatsApp', 'Suporte durante a viagem', 'Conteúdo útil no Instagram', 'Garantia de satisfação'] }

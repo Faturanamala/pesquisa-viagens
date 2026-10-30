@@ -19,7 +19,7 @@ const problemas = problemasConfig(C);
 if (problemas.length) throw new Error('site-config.json com problema:\n- ' + problemas.join('\n- '));
 const dados = JSON.stringify({ config: C, trechos: ctx.TRECHOS, contato: ctx.CONTATO, url: C.url_publica, endpoint: C.endpoint });
 
-const desc = 'Para onde você vai de verdade? Pesquisa rápida e anônima: descubra seu perfil de viajante e quanto suas milhas podem render. Leva 3 minutos.';
+const desc = 'Conte ao Fatura na Mala como você viaja. Pesquisa anônima de 3 minutos para descobrir seu perfil e transformar planos em viagens em família.';
 const favicon = "data:image/svg+xml," + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><rect width="24" height="24" rx="5" fill="#ffcc00"/>' +
   '<path fill="#16191d" transform="translate(3 3) scale(.75)" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>');
@@ -29,8 +29,8 @@ const meta = [
   '<meta name="theme-color" content="#16191d">',
   '<meta property="og:type" content="website">',
   '<meta property="og:locale" content="pt_BR">',
-  '<meta property="og:site_name" content="Pesquisa Viagens">',
-  '<meta property="og:title" content="Pesquisa Viagens">',
+  '<meta property="og:site_name" content="Fatura na Mala | Pesquisa de Viagens">',
+  '<meta property="og:title" content="Fatura na Mala | Pesquisa de Viagens">',
   '<meta property="og:description" content="' + desc + '">',
   '<meta property="og:url" content="' + C.url_publica + '">',
   '<meta property="og:image" content="' + C.url_publica + 'capa.jpg">',
