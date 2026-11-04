@@ -13,7 +13,7 @@
 <meta property="og:description" content="Conte ao Fatura na Mala como você viaja. Pesquisa com contato opcional para descobrir seu perfil e transformar planos em viagens em família.">
 <meta property="og:url" content="https://faturanamala.github.io/pesquisa-viagens/v2/">
 <meta property="og:image" content="https://faturanamala.github.io/pesquisa-viagens/v2/capa-pesquisa-v2.jpg">
-<meta property="og:image:secure_url" content="https://faturanamala.github.io/pesquisa-viagens/v2/capa-fatura-v2.jpg">
+<meta property="og:image:secure_url" content="https://faturanamala.github.io/pesquisa-viagens/v2/capa-pesquisa-v2.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -268,6 +268,7 @@ textarea.campo { min-height: 96px; resize: vertical; }
 @media(max-width:480px) { .topo {flex-wrap:wrap;} .logo-fatura{width:68px;height:68px;} #marca-texto{font-size:25px;} .selo{margin-left:82px;margin-top:-15px;} }
 
 .painel-topo b, .status.vivo, .linha.sua .hora { color:#f5cc9d; }
+.assinatura-etapa{display:block;color:var(--muted);font-size:13px;margin-bottom:12px}.calc label{display:block;margin:16px 0 6px}.calc .campo{width:100%;margin-bottom:8px}.calc .calc-titulo b{line-height:1.3}.paradas{grid-template-columns:repeat(6,1fr)}
 </style>
 </head>
 <body>
@@ -287,7 +288,7 @@ textarea.campo { min-height: 96px; resize: vertical; }
       <div class="linhas" id="linhas"></div>
     </div>
     <p class="assinatura">UMA PESQUISA DO FATURA NA MALA</p><h1>Sua próxima viagem começa com <em>boas escolhas.</em></h1>
-    <p class="lead">Conte ao <strong>Fatura na Mala</strong> como você viaja e usa suas milhas. Sua resposta ajuda a construir uma consultoria pensada para você e sua família. No final, você recebe o seu <strong>perfil de viajante</strong>.</p>
+    <p class="lead">Conte ao <strong>Fatura na Mala</strong> como você viaja e usa suas milhas. Sua resposta ajuda a construir uma consultoria pensada para você e sua família. No final, você recebe o seu <strong>perfil de viajante</strong>. Ao longo do caminho, descubra dicas e explore uma simulação de milhas.</p>
     <div class="fatos">
       <div class="fato"><b>Contato opcional</b><span>Você pode responder sem se identificar.</span></div>
       <div class="fato"><b>Pesquisa breve</b><span>Respostas de tocar e escolher.</span></div>
@@ -317,7 +318,7 @@ textarea.campo { min-height: 96px; resize: vertical; }
 </div>
 
 <script>
-var DADOS = {"config":{"titulo":"Fatura na Mala | Pesquisa de Viagens · V2","url_publica":"https://faturanamala.github.io/pesquisa-viagens/v2/","endpoint":"https://script.google.com/macros/s/AKfycbwPxET6XxmtcID-hqPW1vIf8IrMisuCsoPKX9NGBzYjYIw6-YAsOEvIsnZS7-o-Kf21/exec","chamada":"Fatura na Mala · Consultoria e gestão de milhas para viagens em família. Contato somente se você autorizar.","milheiro_venda":15,"milheiro_bem_usado":45,"dolar":5.5,"milheiro_referencia":25,"bonus_transferencia":0.8,"pontos_categoria":{"Comum ou nacional":0.5,"Gold ou Internacional":1,"Platinum":1.5,"Black ou Infinite":2.2,"Não sei":1},"bancos_sem_pontos":["Nubank","Inter"],"pontos_estrategia":[[5000,2],[10000,2.5],[1000000000000,3]],"perfis":{"estrategista":["Estrategista de Milhas","Você já joga o jogo das milhas. O próximo nível é emitir nas rotas certas, pelo programa certo e na hora certa."],"familia":["Família em Rota","Viajar com crianças pede roteiro com folga, hotel bem localizado e um plano B pronto. É aí que um bom planejamento aparece."],"conforto":["Conforto do Embarque ao Check-in","Você valoriza a viagem desde o aeroporto. Milhas bem usadas podem colocar a executiva dentro do seu orçamento."],"experiencias":["Experiência em Primeiro Lugar","Você viaja para viver o que não se repete. Um roteiro sob medida troca dias corridos por momentos que ficam."],"economico":["Radar de Oportunidades","Você busca o melhor preço. Com as milhas e os cartões certos, dá para ir mais longe gastando o mesmo."],"delegador":["Viajante sem Tempo","Você quer viajar bem sem gastar noites pesquisando. Delegar o planejamento devolve esse tempo para você."],"dormente":["Milhas Adormecidas","Você tem pontos parados que podem virar viagem. Um diagnóstico mostra quanto valem e quando vencem."],"curioso":["Rota em Aberto","Seu próximo destino ainda está em aberto, e esse é o melhor momento para planejar com calma."]},"versao":2},"trechos":[{"codigo":"EMB","nome":"Seu perfil","titulo":"Conte como você costuma viajar","perguntas":[{"id":"viagens_ano","curto":"Viagens por ano","tipo":"unica","obrigatoria":true,"titulo":"Quantas viagens de lazer você faz por ano?","opcoes":["Nenhuma no último ano","1 viagem","2 a 3 viagens","4 ou mais"]},{"id":"tipo_viagem","curto":"Brasil ou exterior","tipo":"unica","obrigatoria":true,"titulo":"Suas viagens costumam ser…","opcoes":["Mais pelo Brasil","Metade Brasil, metade exterior","Mais internacionais","Ainda não costumo viajar"]},{"id":"companhia","curto":"Com quem viaja","tipo":"multipla","obrigatoria":true,"titulo":"Com quem você costuma viajar?","ajuda":"Marque quantas quiser","opcoes":["Sozinho(a)","Casal","Família com crianças","Família sem crianças","Amigos","A trabalho"]},{"id":"cidade","curto":"Cidade de partida","tipo":"texto_curto","titulo":"De que cidade você costuma partir?","placeholder":"Ex.: Belo Horizonte, MG"}]},{"codigo":"DST","nome":"Próxima viagem","titulo":"Qual é o próximo destino da sua família?","perguntas":[{"id":"prazo_viagem","curto":"Você já está planejando uma viagem?","tipo":"unica","titulo":"Você já está planejando uma viagem?","opcoes":["Sim, para os próximos 3 meses","Sim, para daqui a 4 a 6 meses","Sim, para daqui a 7 a 12 meses","Tenho vontade, mas ainda não defini quando","Não estou planejando viajar agora"],"obrigatoria":true},{"id":"destinos","curto":"Destinos (12 meses)","tipo":"multipla","obrigatoria":true,"titulo":"Para onde você quer ir nos próximos 12 meses?","ajuda":"Marque quantos quiser","opcoes":["Nordeste e praias do Brasil","Serra e interior do Brasil","América do Sul","Estados Unidos e Canadá","Caribe e México","Europa","Ásia","África e Oriente Médio","Oceania","Ainda não sei"],"exclusivas":["Ainda não sei"]},{"id":"viagem_sonho","curto":"Viagem dos sonhos","tipo":"texto","titulo":"Qual é a viagem dos seus sonhos?","ajuda":"Opcional, mas adoramos ler.","placeholder":"Ex.: ver a aurora boreal na Noruega com a família"}]},{"codigo":"PLN","nome":"Dificuldades","titulo":"Onde uma ajuda faria diferença?","perguntas":[{"id":"como_planeja","curto":"Como planeja","tipo":"multipla","obrigatoria":true,"titulo":"Como você organiza suas viagens?","ajuda":"Marque quantas quiser","opcoes":["Pesquiso e compro tudo sozinho(a)","Uso sites e apps de reserva","Uso agência de viagens","Peço ajuda a alguém que entende de milhas","Outra pessoa da família resolve"]},{"id":"maior_trabalho","curto":"O que dá trabalho","tipo":"multipla","obrigatoria":true,"max":3,"titulo":"O que mais dá trabalho na hora de planejar?","ajuda":"Escolha até 3","opcoes":["Achar passagem com bom preço","Entender e usar milhas","Escolher hotel e bairro","Montar o roteiro dia a dia","Documentos, vistos e seguro","Transporte no destino","Resolver imprevistos na viagem","Falta de tempo para pesquisar","Não tenho dificuldade no momento","Outro"],"exclusivas":["Não tenho dificuldade no momento"]}]},{"codigo":"MIL","nome":"Pontos e milhas","titulo":"O que você já tem e como usa?","perguntas":[{"id":"programas","curto":"Programas de milhas","tipo":"multipla","obrigatoria":true,"titulo":"Em quais programas você tem pontos ou milhas?","ajuda":"Marque quantos quiser","opcoes":["Smiles","LATAM Pass","Azul Fidelidade","Livelo","Esfera","Pontos do banco ou cartão","Programa de hotel","Não tenho","Não sei"],"exclusivas":["Não tenho","Não sei"]},{"id":"usa_milhas","curto":"Relação com as milhas","tipo":"unica","obrigatoria":true,"titulo":"Como você se relaciona com suas milhas?","opcoes":["Uso bem e sei o que estou fazendo","Uso às vezes, sem muita estratégia","Acumulo, mas não sei como usar","Já perdi milhas por vencimento","Não acumulo milhas"]},{"id":"saldo","curto":"Saldo de milhas","tipo":"unica","titulo":"Somando tudo, quanto você tem, mais ou menos?","opcoes":["Não tenho saldo","Até 10 mil","Mais de 10 mil até 50 mil","Mais de 50 mil até 100 mil","Mais de 100 mil até 300 mil","Mais de 300 mil","Não faço ideia"]},{"id":"gasto_cartao","curto":"Gasto no cartão/mês","tipo":"unica","titulo":"Qual é a faixa de gasto mensal da sua família no cartão de crédito?","ajuda":"Opcional. Ajuda a entender o perfil de uso, sem pedir renda nem dados do cartão.","opcoes":["Até R$ 2 mil","Mais de R$ 2 mil até R$ 5 mil","Mais de R$ 5 mil até R$ 10 mil","Mais de R$ 10 mil até R$ 20 mil","Mais de R$ 20 mil","Prefiro não dizer"]}]},{"codigo":"CNS","nome":"Ajuda e serviços","titulo":"O que faria sentido para você hoje?","perguntas":[{"id":"ajuda_prioritaria","curto":"Se pudesse receber ajuda em uma coisa hoje, qual escolheria?","tipo":"unica","titulo":"Se pudesse receber ajuda em uma coisa hoje, qual escolheria?","opcoes":["Entender meus cartões, pontos e milhas","Usar minhas milhas para uma viagem","Organizar uma viagem completa","Ter acompanhamento das milhas ao longo do ano","Ainda não sei","Não preciso de ajuda agora"],"obrigatoria":true},{"id":"preco_diagnostico","curto":"Pagaria: diagnóstico","tipo":"unica","titulo":"Quanto pagaria por um diagnóstico de milhas e cartões?","opcoes":["Até R$ 150","R$ 150 a 300","R$ 300 a 500","Mais de R$ 500","Não pagaria","Preciso entender melhor o serviço para responder"],"ajuda":"Uma análise dos seus programas e cartões, com um plano de ação. Este serviço é diferente de uma conversa inicial."},{"id":"preco_planejamento","curto":"Pagaria: planejamento","tipo":"unica","titulo":"E pelo planejamento completo de uma viagem internacional?","opcoes":["Até R$ 300","R$ 300 a 700","R$ 700 a 1.500","Mais de R$ 1.500","Não pagaria","Preciso entender melhor o serviço para responder"],"ajuda":"Valor somente pelo planejamento. Passagens, hospedagens e outras despesas da viagem são pagas à parte."},{"id":"preco_mensal","curto":"Pagaria: gestão anual","tipo":"unica","titulo":"Quanto você estaria disposto(a) a pagar por um ano de gestão das suas milhas?","ajuda":"Imagine ter alguém ao seu lado para transformar os pontos do cartão em possibilidades de viagem. Acompanhamos seus pontos e vencimentos, orientamos como acumular e ajudamos você a encontrar boas formas de usar suas milhas para chegar ao próximo destino.\n\nAs opções abaixo mostram o valor anual do serviço e o equivalente por mês.\n\nOs valores são apenas pelo serviço de gestão. Passagens, hospedagens e demais despesas da viagem são pagas à parte.","opcoes":["Menos de R$ 6 mil/ano — abaixo de R$ 500/mês","De R$ 6 mil a menos de R$ 9 mil/ano — R$ 500 a menos de R$ 750/mês","De R$ 9 mil a R$ 12 mil/ano — R$ 750 a R$ 1.000/mês","Mais de R$ 12 mil/ano — acima de R$ 1.000/mês","Não contrataria","Preciso entender melhor o serviço para responder"]},{"id":"confianca","curto":"O que gera confiança","tipo":"multipla","max":3,"titulo":"O que faria você confiar numa consultoria de viagens?","ajuda":"Escolha até 3","opcoes":["Indicação de alguém conhecido","Depoimentos de clientes","Transparência sobre preços e comissões","Atendimento pelo WhatsApp","Suporte durante a viagem","Conteúdo útil no Instagram","Garantia de satisfação"]}]}],"contato":{"codigo":"DES","nome":"Contato opcional","interesse":{"id":"contato_interesse","curto":"Quer contato?","titulo":"Quer entender como o Fatura na Mala pode ajudar na sua próxima viagem?","opcoes":["Quero uma conversa inicial, sem compromisso","Quero receber novidades","Prefiro apenas concluir a pesquisa"]},"campos":[{"id":"contato_nome","rotulo":"Primeiro nome"},{"id":"contato_whatsapp","rotulo":"WhatsApp"},{"id":"contato_email","rotulo":"E-mail"},{"id":"contato_consentimento","rotulo":"Autorizou contato"}]},"url":"https://faturanamala.github.io/pesquisa-viagens/v2/","endpoint":"https://script.google.com/macros/s/AKfycbwPxET6XxmtcID-hqPW1vIf8IrMisuCsoPKX9NGBzYjYIw6-YAsOEvIsnZS7-o-Kf21/exec"};
+var DADOS = {"config":{"titulo":"Fatura na Mala | Pesquisa de Viagens · V2","url_publica":"https://faturanamala.github.io/pesquisa-viagens/v2/","endpoint":"https://script.google.com/macros/s/AKfycbwPxET6XxmtcID-hqPW1vIf8IrMisuCsoPKX9NGBzYjYIw6-YAsOEvIsnZS7-o-Kf21/exec","chamada":"Fatura na Mala · Consultoria e gestão de milhas para viagens em família. Contato somente se você autorizar.","milheiro_venda":15,"milheiro_bem_usado":45,"dolar":5.5,"milheiro_referencia":25,"bonus_transferencia":0.8,"pontos_categoria":{"Comum ou nacional":0.5,"Gold ou Internacional":1,"Platinum":1.5,"Black ou Infinite":2.2,"Não sei":1},"bancos_sem_pontos":["Nubank","Inter"],"pontos_estrategia":[[5000,2],[10000,2.5],[1000000000000,3]],"perfis":{"estrategista":["Estrategista de Milhas","Você já joga o jogo das milhas. O próximo nível é emitir nas rotas certas, pelo programa certo e na hora certa."],"familia":["Família em Rota","Viajar com crianças pede roteiro com folga, hotel bem localizado e um plano B pronto. É aí que um bom planejamento aparece."],"conforto":["Conforto do Embarque ao Check-in","Você valoriza a viagem desde o aeroporto. Milhas bem usadas podem colocar a executiva dentro do seu orçamento."],"experiencias":["Experiência em Primeiro Lugar","Você viaja para viver o que não se repete. Um roteiro sob medida troca dias corridos por momentos que ficam."],"economico":["Radar de Oportunidades","Você busca o melhor preço. Com as milhas e os cartões certos, dá para ir mais longe gastando o mesmo."],"delegador":["Viajante sem Tempo","Você quer viajar bem sem gastar noites pesquisando. Delegar o planejamento devolve esse tempo para você."],"dormente":["Milhas Adormecidas","Você tem pontos parados que podem virar viagem. Um diagnóstico mostra quanto valem e quando vencem."],"curioso":["Rota em Aberto","Seu próximo destino ainda está em aberto, e esse é o melhor momento para planejar com calma."]},"versao":2},"trechos":[{"codigo":"EMB","nome":"Seu perfil","titulo":"Conte como você costuma viajar","perguntas":[{"id":"viagens_ano","curto":"Viagens por ano","tipo":"unica","obrigatoria":true,"titulo":"Quantas viagens de lazer você faz por ano?","opcoes":["Nenhuma no último ano","1 viagem","2 a 3 viagens","4 ou mais"]},{"id":"tipo_viagem","curto":"Brasil ou exterior","tipo":"unica","obrigatoria":true,"titulo":"Suas viagens costumam ser…","opcoes":["Mais pelo Brasil","Metade Brasil, metade exterior","Mais internacionais","Ainda não costumo viajar"]},{"id":"companhia","curto":"Com quem viaja","tipo":"multipla","obrigatoria":true,"titulo":"Com quem você costuma viajar?","ajuda":"Marque quantas quiser","opcoes":["Sozinho(a)","Casal","Família com crianças","Família sem crianças","Amigos","A trabalho"]},{"id":"cidade","curto":"Cidade de partida","tipo":"texto_curto","titulo":"De que cidade você costuma partir?","placeholder":"Ex.: Belo Horizonte, MG"}],"curiosidade":"Viajar em família começa por entender o que é importante para cada pessoa. Frequência, companhia e destino ajudam a montar um plano que combina com vocês."},{"codigo":"DST","nome":"Próxima viagem","titulo":"Qual é o próximo destino da sua família?","perguntas":[{"id":"prazo_viagem","curto":"Você já está planejando uma viagem?","tipo":"unica","titulo":"Você já está planejando uma viagem?","opcoes":["Sim, para os próximos 3 meses","Sim, para daqui a 4 a 6 meses","Sim, para daqui a 7 a 12 meses","Tenho vontade, mas ainda não defini quando","Não estou planejando viajar agora"],"obrigatoria":true},{"id":"destinos","curto":"Destinos (12 meses)","tipo":"multipla","obrigatoria":true,"titulo":"Para onde você quer ir nos próximos 12 meses?","ajuda":"Marque quantos quiser","opcoes":["Nordeste e praias do Brasil","Serra e interior do Brasil","América do Sul","Estados Unidos e Canadá","Caribe e México","Europa","Ásia","África e Oriente Médio","Oceania","Ainda não sei"],"exclusivas":["Ainda não sei"]},{"id":"viagem_sonho","curto":"Viagem dos sonhos","tipo":"texto","titulo":"Qual é a viagem dos seus sonhos?","ajuda":"Opcional, mas adoramos ler.","placeholder":"Ex.: ver a aurora boreal na Noruega com a família"}],"curiosidade":"O mesmo trecho pode exigir quantidades diferentes de milhas conforme o programa, a data e a disponibilidade. Flexibilidade pode abrir novas possibilidades."},{"codigo":"PLN","nome":"Dificuldades","titulo":"Onde uma ajuda faria diferença?","perguntas":[{"id":"como_planeja","curto":"Como planeja","tipo":"multipla","obrigatoria":true,"titulo":"Como você organiza suas viagens?","ajuda":"Marque quantas quiser","opcoes":["Pesquiso e compro tudo sozinho(a)","Uso sites e apps de reserva","Uso agência de viagens","Peço ajuda a alguém que entende de milhas","Outra pessoa da família resolve"]},{"id":"maior_trabalho","curto":"O que dá trabalho","tipo":"multipla","obrigatoria":true,"max":3,"titulo":"O que mais dá trabalho na hora de planejar?","ajuda":"Escolha até 3","opcoes":["Achar passagem com bom preço","Entender e usar milhas","Escolher hotel e bairro","Montar o roteiro dia a dia","Documentos, vistos e seguro","Transporte no destino","Resolver imprevistos na viagem","Falta de tempo para pesquisar","Não tenho dificuldade no momento","Outro"],"exclusivas":["Não tenho dificuldade no momento"]}],"curiosidade":"Na hora de comparar uma viagem, olhe o custo completo: bagagem, deslocamentos, localização da hospedagem e tempo de conexão também entram na conta."},{"codigo":"MIL","nome":"Pontos e milhas","titulo":"O que você já tem e como usa?","perguntas":[{"id":"programas","curto":"Programas de milhas","tipo":"multipla","obrigatoria":true,"titulo":"Em quais programas você tem pontos ou milhas?","ajuda":"Marque quantos quiser","opcoes":["Smiles","LATAM Pass","Azul Fidelidade","Livelo","Esfera","Pontos do banco ou cartão","Programa de hotel","Não tenho","Não sei"],"exclusivas":["Não tenho","Não sei"]},{"id":"usa_milhas","curto":"Relação com as milhas","tipo":"unica","obrigatoria":true,"titulo":"Como você se relaciona com suas milhas?","opcoes":["Uso bem e sei o que estou fazendo","Uso às vezes, sem muita estratégia","Acumulo, mas não sei como usar","Já perdi milhas por vencimento","Não acumulo milhas"]},{"id":"saldo","curto":"Saldo de milhas","tipo":"unica","titulo":"Somando tudo, quanto você tem, mais ou menos?","opcoes":["Não tenho saldo","Até 10 mil","Mais de 10 mil até 50 mil","Mais de 50 mil até 100 mil","Mais de 100 mil até 300 mil","Mais de 300 mil","Não faço ideia"]},{"id":"gasto_cartao","curto":"Gasto no cartão/mês","tipo":"unica","titulo":"Qual é a faixa de gasto mensal da sua família no cartão de crédito?","ajuda":"Opcional. Ajuda a entender o perfil de uso, sem pedir renda nem dados do cartão.","opcoes":["Até R$ 2 mil","Mais de R$ 2 mil até R$ 5 mil","Mais de R$ 5 mil até R$ 10 mil","Mais de R$ 10 mil até R$ 20 mil","Mais de R$ 20 mil","Prefiro não dizer"]}],"curiosidade":"Pontos do cartão e milhas de companhias aéreas não são sempre a mesma coisa. Antes de transferir, confira validade, regras e se há uma emissão que faça sentido para você.","calculadora":true},{"codigo":"CNS","nome":"Ajuda e serviços","titulo":"O que faria sentido para você hoje?","perguntas":[{"id":"ajuda_prioritaria","curto":"Se pudesse receber ajuda em uma coisa hoje, qual escolheria?","tipo":"unica","titulo":"Se pudesse receber ajuda em uma coisa hoje, qual escolheria?","opcoes":["Entender meus cartões, pontos e milhas","Usar minhas milhas para uma viagem","Organizar uma viagem completa","Ter acompanhamento das milhas ao longo do ano","Ainda não sei","Não preciso de ajuda agora"],"obrigatoria":true},{"id":"preco_diagnostico","curto":"Pagaria: diagnóstico","tipo":"unica","titulo":"Quanto pagaria por um diagnóstico de milhas e cartões?","opcoes":["Até R$ 150","R$ 150 a 300","R$ 300 a 500","Mais de R$ 500","Não pagaria","Preciso entender melhor o serviço para responder"],"ajuda":"Uma análise dos seus programas e cartões, com um plano de ação. Este serviço é diferente de uma conversa inicial."},{"id":"preco_planejamento","curto":"Pagaria: planejamento","tipo":"unica","titulo":"E pelo planejamento completo de uma viagem internacional?","opcoes":["Até R$ 300","R$ 300 a 700","R$ 700 a 1.500","Mais de R$ 1.500","Não pagaria","Preciso entender melhor o serviço para responder"],"ajuda":"Valor somente pelo planejamento. Passagens, hospedagens e outras despesas da viagem são pagas à parte."},{"id":"preco_mensal","curto":"Pagaria: gestão anual","tipo":"unica","titulo":"Quanto você estaria disposto(a) a pagar por um ano de gestão das suas milhas?","ajuda":"Imagine ter alguém ao seu lado para transformar os pontos do cartão em possibilidades de viagem. Acompanhamos seus pontos e vencimentos, orientamos como acumular e ajudamos você a encontrar boas formas de usar suas milhas para chegar ao próximo destino.\n\nAs opções abaixo mostram o valor anual do serviço e o equivalente por mês.\n\nOs valores são apenas pelo serviço de gestão. Passagens, hospedagens e demais despesas da viagem são pagas à parte.","opcoes":["Menos de R$ 6 mil/ano — abaixo de R$ 500/mês","De R$ 6 mil a menos de R$ 9 mil/ano — R$ 500 a menos de R$ 750/mês","De R$ 9 mil a R$ 12 mil/ano — R$ 750 a R$ 1.000/mês","Mais de R$ 12 mil/ano — acima de R$ 1.000/mês","Não contrataria","Preciso entender melhor o serviço para responder"]},{"id":"confianca","curto":"O que gera confiança","tipo":"multipla","max":3,"titulo":"O que faria você confiar numa consultoria de viagens?","ajuda":"Escolha até 3","opcoes":["Indicação de alguém conhecido","Depoimentos de clientes","Transparência sobre preços e comissões","Atendimento pelo WhatsApp","Suporte durante a viagem","Conteúdo útil no Instagram","Garantia de satisfação"]}],"curiosidade":"Uma boa consultoria começa pelo que você já tem: seus cartões, seus pontos e seus planos. Sem gastar a mais só para acumular."}],"contato":{"codigo":"DES","nome":"Contato opcional","interesse":{"id":"contato_interesse","curto":"Quer contato?","titulo":"Quer entender como o Fatura na Mala pode ajudar na sua próxima viagem?","opcoes":["Quero uma conversa inicial, sem compromisso","Quero receber novidades","Prefiro apenas concluir a pesquisa"]},"campos":[{"id":"contato_nome","rotulo":"Primeiro nome"},{"id":"contato_whatsapp","rotulo":"WhatsApp"},{"id":"contato_email","rotulo":"E-mail"},{"id":"contato_consentimento","rotulo":"Autorizou contato"}]},"url":"https://faturanamala.github.io/pesquisa-viagens/v2/","endpoint":"https://script.google.com/macros/s/AKfycbwPxET6XxmtcID-hqPW1vIf8IrMisuCsoPKX9NGBzYjYIw6-YAsOEvIsnZS7-o-Kf21/exec"};
 </script>
 <script>
 (function () {
@@ -511,6 +512,7 @@ var DADOS = {"config":{"titulo":"Fatura na Mala | Pesquisa de Viagens · V2","ur
 
   function cabecalho(n, t) {
     return h('div', { 'class': 'trecho-cab' }, [
+      h('span', { 'class': 'assinatura-etapa', text:'Fatura na Mala · Milhas e viagens em família' }),
       h('span', { 'class': 'rotulo', text: 'Trecho ' + (n + 1) + ' de ' + PARADAS.length + ' · ' + t.nome }),
       h('h2', { text: t.titulo })
     ]);
@@ -518,7 +520,7 @@ var DADOS = {"config":{"titulo":"Fatura na Mala | Pesquisa de Viagens · V2","ur
   function curiosidade(txt) {
     return h('aside', { 'class': 'curiosidade' }, [
       h('span', { 'class': 'placa', 'aria-hidden': 'true', text: '?' }),
-      h('div', null, [h('b', { text: 'Você sabia?' }), h('p', { text: txt })])
+      h('div', null, [h('b', { text: 'Dica Fatura na Mala' }), h('p', { text: txt })])
     ]);
   }
   function botoesNav(ultimo) {
@@ -542,7 +544,7 @@ var DADOS = {"config":{"titulo":"Fatura na Mala | Pesquisa de Viagens · V2","ur
         var calc = h('section', { 'class': 'calc', 'aria-live': 'polite' });
         f.appendChild(calc);
         desenhaCalc(calc, true);
-        f.onclick = function () { setTimeout(function () { desenhaCalc(calc, true); }, 0); };
+        f.onclick = null;
       } else f.onclick = null;
       if (t.curiosidade) f.appendChild(curiosidade(t.curiosidade));
       f.appendChild(botoesNav(false));
@@ -638,7 +640,7 @@ var DADOS = {"config":{"titulo":"Fatura na Mala | Pesquisa de Viagens · V2","ur
     var isca = $('f_site'); if (isca && isca.value) r._site = isca.value;
     var res = calculaPerfil(resp), m = calculaMilhas(resp);
     r._perfil = (PERFIS[res.perfil] || PERFIS.curioso)[0];
-    if (m) { r._milhas_hoje = Math.round(m.atual); r._milhas_estrategia = Math.round(m.boa); r._ganho_milhas = Math.round(m.dif); }
+    // A simulação educativa fica no navegador; não é um dado declarado na pesquisa.
     return r;
   }
   function enviar() {
@@ -670,63 +672,40 @@ var DADOS = {"config":{"titulo":"Fatura na Mala | Pesquisa de Viagens · V2","ur
   }
 
   /* ---------- Calculadora do cartão ---------- */
-  var GASTO = { 'Até R$ 2 mil': 1500, 'R$ 2 a 5 mil': 3500, 'R$ 5 a 10 mil': 7500, 'R$ 10 a 20 mil': 15000, 'Mais de R$ 20 mil': 25000 };
+  var GASTO = { 'Até R$ 2 mil':1500, 'Mais de R$ 2 mil até R$ 5 mil':3500, 'Mais de R$ 5 mil até R$ 10 mil':7500, 'Mais de R$ 10 mil até R$ 20 mil':15000, 'Mais de R$ 20 mil':25000 };
+  var SIMULACAO_V2 = {gasto:null,taxa:1};
   function calculaMilhas(r) {
-    var gasto = GASTO[r.gasto_cartao];
-    if (!gasto || !r.cartao_categoria) return null;
-    var usd = gasto * 12 / CFG.dolar;
-    var taxa = CFG.pontos_categoria[r.cartao_categoria] || 1;
-    var disseQuePontua = r.cartao_pontua === 'Sim, e transfiro para companhias aéreas' || r.cartao_pontua === 'Sim, mas não sei aproveitar';
-    var semPontos = r.cartao_pontua === 'Não' ||
-      (CFG.bancos_sem_pontos.indexOf(r.cartao_banco) >= 0 && r.cartao_categoria !== 'Black ou Infinite' && !disseQuePontua);
-    if (semPontos) taxa = 0;
-    var jaTransfere = r.cartao_pontua === 'Sim, e transfiro para companhias aéreas';
-    var atual = usd * taxa * (jaTransfere ? 1 + CFG.bonus_transferencia / 2 : 1);
-    var taxaBoa = 2;
-    for (var k = 0; k < CFG.pontos_estrategia.length; k++) {
-      if (gasto <= CFG.pontos_estrategia[k][0]) { taxaBoa = CFG.pontos_estrategia[k][1]; break; }
-    }
-    taxaBoa = Math.max(taxaBoa, taxa);
-    var boa = usd * taxaBoa * (1 + CFG.bonus_transferencia);
-    var dif = Math.max(0, boa - atual);
-    return { gasto: gasto, atual: atual, boa: boa, dif: dif, valor: dif / 1000 * CFG.milheiro_referencia,
-      semPontos: semPontos, banco: r.cartao_banco, categoria: r.cartao_categoria };
+    var gasto=SIMULACAO_V2.gasto===null?GASTO[r.gasto_cartao]:Number(SIMULACAO_V2.gasto);
+    if(!Number.isFinite(gasto)||gasto<=0||gasto>1000000)return null;
+    var taxa=Number(SIMULACAO_V2.taxa),usd=gasto*12/CFG.dolar;
+    var atual=usd*taxa,boa=atual*(1+CFG.bonus_transferencia);
+    return {gasto:gasto,taxa:taxa,atual:atual,boa:boa,dif:boa-atual,valor:(boa-atual)/1000*CFG.milheiro_referencia};
   }
-  function milhasTxt(n) { return n < 1000 ? Math.round(n).toLocaleString('pt-BR') : Math.round(n / 1000).toLocaleString('pt-BR') + ' mil'; }
-  function desenhaCalc(box, noTrecho) {
-    var c = calculaMilhas(estado.resp);
-    box.innerHTML = '';
-    box.appendChild(h('div', { 'class': 'calc-titulo' }, [h('b', { text: 'Quanto seu cartão pode render' }), h('span', { 'class': 'rotulo', text: 'Milhas por ano' })]));
-    if (!c) {
-      box.appendChild(h('p', { 'class': 'calc-vazio', text: noTrecho
-        ? 'Escolha acima quanto você gasta no cartão e a categoria dele. A conta aparece aqui na hora.'
-        : 'Sem o gasto e o cartão, não deu para fazer a conta.' }));
-      return;
+  function milhasTxt(n) { return Math.round(n).toLocaleString('pt-BR'); }
+  function desenhaCalc(box,noTrecho) {
+    box.innerHTML='';
+    box.appendChild(h('div',{'class':'calc-titulo'},[h('b',{text:'Seu cartão pode ser o começo da próxima viagem'}),h('span',{'class':'rotulo',text:'Simulador de milhas · opcional'})]));
+    box.appendChild(h('p',{text:'Veja como gasto e pontuação entram na conta. Os valores abaixo são exemplos: ajuste para explorar. Esta simulação não altera suas respostas.'}));
+    var entrada=h('input',{type:'number',id:noTrecho?'sim-gasto':'sim-gasto-final',min:'0',max:'1000000',step:'100','class':'campo',placeholder:'Ex.: 3500'});
+    var inicial=SIMULACAO_V2.gasto===null?GASTO[estado.resp.gasto_cartao]:SIMULACAO_V2.gasto;
+    entrada.value=inicial==null?'':inicial;
+    box.appendChild(h('label',{'for':entrada.id,text:'Gasto mensal para simular (R$)'}));box.appendChild(entrada);
+    var taxa=h('select',{'class':'campo',id:noTrecho?'sim-taxa':'sim-taxa-final'});
+    [0,1,1.5,2,2.5,3].forEach(function(n){var op=h('option',{value:String(n),text:n===0?'Sem pontuação':String(n).replace('.',',')+' ponto(s) por dólar'});taxa.appendChild(op);});
+    taxa.value=String(SIMULACAO_V2.taxa);
+    box.appendChild(h('label',{'for':taxa.id,text:'Pontuação usada no exemplo (consulte a regra do seu cartão)'}));box.appendChild(taxa);
+    var saida=h('div',{'aria-live':'polite'});box.appendChild(saida);
+    function atualizar(){
+      SIMULACAO_V2.gasto=entrada.value===''?null:Number(entrada.value);SIMULACAO_V2.taxa=Number(taxa.value);
+      var c=entrada.value===''?null:calculaMilhas(estado.resp);saida.innerHTML='';
+      if(!c){saida.appendChild(h('p',{'class':'calc-nota',text:'Informe um gasto maior que zero e até R$ 1 milhão para ver o exemplo.'}));return;}
+      if(c.taxa===0){saida.appendChild(h('p',{text:'Neste cenário, o cartão não gera pontos. Confira se há um programa de pontos ou cashback e seus custos antes de considerar uma mudança.'}));return;}
+      function barra(nome,n,boa){return h('div',{'class':'barra'+(boa?' boa':'')},[h('div',{'class':'barra-rotulo'},[h('span',{text:nome}),h('strong',{text:milhasTxt(n)})]),h('div',{'class':'trilho'},[h('div',{'class':'enche',style:'width:'+Math.max(2,n/c.boa*100)+'%'})])]);}
+      saida.appendChild(h('div',{'class':'barras'},[barra('Pontos em 12 meses, no exemplo',c.atual,false),barra('Milhas após transferência 1:1 com bônus de '+Math.round(CFG.bonus_transferencia*100)+'%',c.boa,true)]));
+      saida.appendChild(h('div',{'class':'ganho'},[h('b',{text:'+'+milhasTxt(c.dif)+' milhas neste cenário'}),'O bônus muda a conta sem aumentar o gasto simulado. Antes de transferir, confira as regras e planeje como usar.']));
+      saida.appendChild(h('p',{'class':'calc-nota',text:'Exemplo educativo, não uma previsão: gasto de '+fmtReais(c.gasto)+'/mês, dólar hipotético de R$ '+CFG.dolar.toFixed(2).replace('.',',')+', '+String(c.taxa).replace('.',',')+' ponto(s)/US$, conversão 1:1 e bônus hipotético de '+Math.round(CFG.bonus_transferencia*100)+'%. Câmbio, elegibilidade, limites e campanhas variam. Não considera anuidades, taxas ou expiração; não garante passagens nem economia.'}));
     }
-    var max = Math.max(c.boa, 1);
-    function barra(rotulo, valor, boa) {
-      return h('div', { 'class': 'barra' + (boa ? ' boa' : '') }, [
-        h('div', { 'class': 'barra-rotulo' }, [h('span', { text: rotulo }), h('strong', { text: milhasTxt(valor) })]),
-        h('div', { 'class': 'trilho' }, [h('div', { 'class': 'enche', style: 'width:' + Math.max(2, valor / max * 100) + '%' })])
-      ]);
-    }
-    var nomeCartao = (c.banco && c.banco !== 'Outro' ? c.banco + ' ' : '') + c.categoria.toLowerCase();
-    box.appendChild(h('div', { 'class': 'barras' }, [
-      barra(c.semPontos ? 'Hoje (seu cartão não acumula pontos)' : 'Hoje, com o seu cartão (' + nomeCartao + ')', c.atual, false),
-      barra('Com estratégia, gastando o mesmo', c.boa, true)
-    ]));
-    if (c.dif > 500) {
-      box.appendChild(h('div', { 'class': 'ganho' }, [
-        h('b', { text: '+' + milhasTxt(c.dif) + ' milhas por ano' }),
-        'Perto de ' + fmtReais(c.valor) + ' em passagens que hoje ficam na mesa, só por saber qual cartão usar e quando transferir.'
-      ]));
-    } else {
-      box.appendChild(h('div', { 'class': 'ganho' }, [h('b', { text: 'Você já está perto do máximo' }),
-        'O próximo passo é usar bem essas milhas: emitir no programa certo rende muito mais do que acumular.']));
-    }
-    box.appendChild(h('p', { 'class': 'calc-nota', text: 'Estimativa ilustrativa para um gasto de ' + fmtReais(c.gasto) + ' por mês, dólar a R$ ' +
-      CFG.dolar.toFixed(2).replace('.', ',') + ', cartão com pontuação adequada ao seu gasto e transferência em campanha com ' +
-      Math.round(CFG.bonus_transferencia * 100) + '% de bônus. Milhas valendo R$ ' + CFG.milheiro_referencia + ' o milheiro.' }));
+    entrada.addEventListener('input',atualizar);taxa.addEventListener('change',atualizar);atualizar();
   }
 
   /* ---------- Perfil e estimativa ---------- */
@@ -742,7 +721,7 @@ else if(r.usa_milhas==='Uso bem e sei o que estou fazendo')perfil='estrategista'
 else if(r.usa_milhas==='Acumulo, mas não sei como usar'||r.usa_milhas==='Já perdi milhas por vencimento')perfil='dormente';
 else if(r.ajuda_prioritaria==='Usar minhas milhas para uma viagem')perfil='economico';
 else if(Array.isArray(r.destinos)&&r.destinos.some(function(d){return ['Ásia','África e Oriente Médio','Oceania'].indexOf(d)>=0;}))perfil='experiencias';
-return {perfil:perfil,destino:Array.isArray(r.destinos)&&r.destinos[0]!=='Ainda não sei'?r.destinos[0]:'A definir',estimativa:null,cartao:false,nome:(r.contato_nome||'').trim().split(' ')[0],cidade:(r.cidade||'').trim()};
+return {perfil:perfil,destino:Array.isArray(r.destinos)&&r.destinos[0]!=='Ainda não sei'?r.destinos[0]:'A definir',estimativa:null,cartao:!!calculaMilhas(r),nome:(r.contato_nome||'').trim().split(' ')[0],cidade:(r.cidade||'').trim()};
 }
 
   function fmtReais(n) { return 'R$ ' + (Math.round(n / 50) * 50).toLocaleString('pt-BR'); }
@@ -801,7 +780,7 @@ return {perfil:perfil,destino:Array.isArray(r.destinos)&&r.destinos[0]!=='Ainda 
     var aviso = h('p', { 'class': 'copiado', 'aria-live': 'polite' });
     var texto = h('textarea', { 'class': 'campo', id: 'f_compartilhar', rows: '3', readonly: 'readonly' }); texto.value = msg;
     box.appendChild(h('div', { 'class': 'compartilhar' }, [
-      h('h2', { text: 'Viaje com o Fatura na Mala' }), h('a', { href:'https://www.instagram.com/faturanamala/',target:'_blank',rel:'noopener',text:'Conheça o Fatura na Mala no Instagram ↗' }),
+      h('h2', { text: 'Viaje com o Fatura na Mala' }), h('a', { href:'https://www.instagram.com/faturanamala/',target:'_blank',rel:'noopener','class':'btn btn-principal',text:'Acompanhe @faturanamala no Instagram ↗' }),
       h('p', { text: CFG.chamada + ' Mande para a família e os amigos: quanto mais gente responder, mais sob medida fica.' }),
       h('div', { 'class': 'acoes' }, [
         h('a', { 'class': 'btn btn-principal', href: 'https://wa.me/?text=' + encodeURIComponent(msg), target: '_blank', rel: 'noopener', text: 'Enviar no WhatsApp' }),
